@@ -1,0 +1,27 @@
+<html>
+<head>
+<script type="text/javascript">
+
+function Connect() 
+{
+  var ws = require('ws');
+  var LiveApi = require('binary-live-api').LiveApi;
+
+  var api = new LiveApi({ websocket: ws });
+  api.authorize('My token').then(function() 
+  {
+    api.getPortfolio();
+  });
+  api.events.on('portfolio', function(data) { ping(); });
+}
+
+</script>
+
+</head>
+
+<body OnLoad="Connect()">
+
+
+</body>
+</html>
+
