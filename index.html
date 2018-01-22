@@ -1,116 +1,23 @@
 <html>
 <head>
 <script type="text/javascript">
-var output;
-
-
-
-function parseGetVars()
-{
-  var args = new Array();
-  var query = window.location.search.substring(1);
-  if (query)
-  {
-    var strList = query.split('&');
-    for(str in strList)
-    {
-       var parts = strList[str].split('=');
-       args[unescape(parts[0])] = unescape(parts[1]);
-    }
-  }
-  return args;
-}
-
-
-function Connect() 
-{
-  output = document.getElementById("debug");
-  var token = "aXowR8oHd7RWTD2";
-  if (token == '')
-  {
-    alert("You must add an API Token");
-    return;
-  }
-
-  ws = new WebSocket('wss://ws.binaryws.com/websockets/v3');
-  ws.onopen = function(evt) 
-  {
-    onOpen(evt)
-  };
-  ws.onmessage = function(evt) 
-  {
-    onMessage(evt)
-  };
-}
-
-    onOpen = function(evt) 
-	{
-      var token = "aXowR8oHd7RWTD2";
-      ws.send(JSON.stringify({authorize: token}));
-
-    }
-
-onMessage = function(msg) 
-{
-  var js = JSON.parse(msg.data);
-
-  if (js.error) 
-  { //Just for check for error
-    writeToScreen("Error: " + js.error.message);
-    return;
-  }
-
-  if (js.msg_type == 'authorize') 
-  {
-    var get = parseGetVars();
-    writeToScreen("Authorized OK:" + "  Email: " + js.authorize.email + "  Account: " + js.authorize.loginid + "Amount" + get['amount']);
-	ws.send(JSON.stringify({
-            "buy": "1",
-  "price": "30",
-  "parameters": {
-       "amount":"30",
-       "basis": "payout",
-       "contract_type": "CALL",
-       "currency":"USD",
-       "duration":"60",
-        "duration_unit": "s",
-       "proposal": 1,
-        "symbol": "frxEURUSD"}
-        }));
-  }
-
-  if (js.msg_type == 'balance') 
-  {
-    writeToScreen("Balance: " + js.balance.balance);
-  }
-
-}
-
-    function GetBalance() 
-	{
-      if (ws) {
-            ws.send(JSON.stringify({
-                balance: 1
-            }));
-        }
-    }
-
-    function writeToScreen(message) 
-	{
-        var pre = document.createElement("p");
-        pre.style.wordWrap = "break-word";
-        pre.innerHTML = message;
-        output.appendChild(pre);
-    }
-
+var ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=12243');
+ws.onopen = function(evt) {
+    ws.send(JSON.stringify({ticks:'R_100'}));
+};
+ws.onmessage = function(msg) {
+   var data = JSON.parse(msg.data);
+   console.log('ticks update: %o', data);
+};
 </script>
-
 </head>
-<body OnLoad="Connect()">
+    
+<body>
 
-API TOKEN:<input type="text" id="apitoken" name="apitoken"><br><br>
-<button type="button" onclick=Connect()>Connect</button>
-<button type="button" onclick=GetBalance()>GetBalance</button>
-<div id="debug"></div>
+
+
+
+
 </body>
+
 </html>
