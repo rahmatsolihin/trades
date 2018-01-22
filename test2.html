@@ -1,3 +1,6 @@
+<html>
+<head>
+<script type="text/javascript">
 var ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=12243');
 
 ws.onopen = function(evt) {
@@ -8,3 +11,16 @@ ws.onmessage = function(msg) {
    var data = JSON.parse(msg.data);
    console.log('ticks update: %o', data);
 };
+
+</script>
+</head>
+    
+<body>
+
+
+
+
+
+</body>
+
+</html>
